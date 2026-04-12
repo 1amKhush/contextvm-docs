@@ -233,7 +233,7 @@ Clients can discover PMI support through:
 
 1. **Public Announcements**: Check `pmi` tags in server announcements
 2. **Initialization Responses**: Check `pmi` tags in server initialization responses
-3. **Stateless Operations**: Handle compatibility at request time when no prior discovery is possible
+3. **Stateless Operations**: Handle compatibility at request time when no prior discovery is possible, using first-message exchange negotiation semantics (see informational [CEP-25](/spec/ceps/informational/cep-25))
 
 Servers can discover PMI support through:
 
@@ -242,6 +242,8 @@ Servers can discover PMI support through:
 ##### Stateless operation
 
 In stateless operation (no prior initialization), clients that want to use paid capabilities SHOULD include one or more `pmi` tags in the request event so the server can select a compatible payment method.
+
+This follows the first-message exchange behavior model described in informational [CEP-25](/spec/ceps/informational/cep-25).
 
 ### Payment Flow
 

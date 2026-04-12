@@ -13,7 +13,9 @@ description: Public server discovery mechanism for ContextVM capabilities
 
 This CEP proposes a public server discovery mechanism for ContextVM using Nostr replaceable events. The mechanism allows MCP servers to advertise their capabilities and metadata through the Nostr network, enabling clients to discover and browse available services without requiring prior knowledge of server public keys. This enhances discoverability while maintaining the decentralized nature of the protocol.
 
-This CEP also defines the discovery tag set that servers MAY replay on the first direct response sent to a client session. Public announcements remain the canonical public discoverability mechanism, while direct-response replay improves interoperability for stateless or announcement-agnostic clients.
+This CEP also defines the discovery tag set that servers MAY replay on the first direct server message (response or notification) sent in a client session. Public announcements remain the canonical public discoverability mechanism, while direct-message replay improves interoperability for stateless or announcement-agnostic clients.
+
+The first-message exchange behavior model is documented in the informational [CEP-25](/spec/ceps/informational/cep-25).
 
 ## Specification
 
@@ -25,7 +27,7 @@ Since each server is uniquely identified by its public key, the announcement eve
 
 Providers announce their servers and capabilities by publishing events with kinds 11316 (server), 11317 (tools/list), 11318 (resources/list), 11319 (resource templates/list), and 11320 (prompts/list).
 
-The `11316` server announcement defines the standard discovery tags for a server. Those same tags MAY be replayed on the first direct response sent by the server to a client.
+The `11316` server announcement defines the standard discovery tags for a server. Those same tags MAY be replayed on the first direct server message (response or notification) sent in that session.
 
 **Note:** The examples below present the `content` as a JSON object for readability; it must be stringified before inclusion in a Nostr event.
 
@@ -89,15 +91,15 @@ The `tags` field provides additional metadata for discoverability:
 - **website**: Server website URL
 - **support_encryption**: Indicates server supports encrypted messages
 
-These discovery tags are not limited to public announcement events. Servers MAY also include the same standard and custom discovery tags on the first direct response sent to a client session so that stateless clients can learn server metadata and transport capabilities without first fetching public announcements.
+These discovery tags are not limited to public announcement events. Servers MAY also include the same standard and custom discovery tags on the first direct server message sent in a client session so that stateless clients can learn server metadata and transport capabilities without first fetching public announcements.
 
-When discovery tags are observed on a direct server response:
+When discovery tags are observed on a direct server message:
 
 - Clients SHOULD treat them as semantically equivalent to the same tags on the public server announcement
-- Servers SHOULD include the full discovery tag set they want the client to learn on the first direct response of a session
+- Servers SHOULD include the full discovery tag set they want the client to learn on the first direct server message of a session
 - Custom discovery tags MAY be included and SHOULD be preserved by clients even when they are not interpreted by the SDK
 
-Because direct-response replay is session-scoped, it does not replace public announcements for indexing, browsing, or relay-based discovery.
+Because direct-message replay is session-scoped, it does not replace public announcements for indexing, browsing, or relay-based discovery.
 
 ### Capability List Announcements
 
@@ -141,9 +143,9 @@ As in the Server Announcement event, the `content` field contains a JSON string 
 
 An alternative flow is to subscribe to all announcement events published by the server public key and fetch the public metadata in one step, instead of first fetching the server announcement and then fetching the capability lists.
 
-For stateless or announcement-agnostic clients, implementations MAY also learn the same discovery tags from the first direct server response they receive. This direct-response replay is complementary to public discovery and does not replace announcements as the canonical public advertisement mechanism.
+For stateless or announcement-agnostic clients, implementations MAY also learn the same discovery tags from the first direct server message they receive. This direct-message replay is complementary to public discovery and does not replace announcements as the canonical public advertisement mechanism.
 
-Clients that observe both public announcements and direct-response replay SHOULD treat them as two delivery paths for the same discovery tag vocabulary.
+Clients that observe both public announcements and direct-message replay SHOULD treat them as two delivery paths for the same discovery tag vocabulary.
 
 ### Event Replacement Behavior
 

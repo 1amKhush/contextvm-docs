@@ -34,7 +34,9 @@ Servers that support ephemeral gift wraps MUST advertise support by including th
 - Server initialization responses, and/or
 - Public server announcements (see CEP-6).
 
-Servers SHOULD also include this tag on the first direct response sent to a client session when that response does not itself carry the initialize result. This keeps support discovery available to stateless clients that never observe a real initialize handshake.
+Servers SHOULD also include this tag on the first direct server message sent in a client session (response or notification) when that message does not itself carry the initialize result. This keeps support discovery available to stateless clients that never observe a real initialize handshake.
+
+The first-message exchange behavior model is documented in the informational [CEP-25](/spec/ceps/informational/cep-25).
 
 Example (tags only):
 
