@@ -246,6 +246,16 @@ Servers can publish a NIP-65 relay list so clients can discover where the server
 - if `relayListUrls` is omitted, the SDK derives advertised relays from the configured relay handler when possible
 - `bootstrapRelayUrls` can be used to publish discoverability events to extra relays without advertising them as operational relays
 
+### TypeScript SDK Implementation Profile (Local Relay Determinism)
+
+The following behavior is a TypeScript SDK implementation profile for discoverability publication. It is not a protocol requirement in [CEP-17](/spec/ceps/cep-17).
+
+- When all advertised operational relays are local-only (`memory://`, `localhost`, `127.0.0.1`, `::1`, `0.0.0.0`) and `bootstrapRelayUrls` is not explicitly configured, default public bootstrap relays are skipped.
+- If `bootstrapRelayUrls` is explicitly provided, those relays are still used as discoverability publication targets.
+- Relay-subset publication is used only when every publish target is `ws://` or `wss://`; otherwise, the SDK falls back to the direct publish path.
+
+This profile improves determinism for local and test deployments while keeping CEP-17 semantics unchanged.
+
 ### Why bootstrap relays exist
 
 Operational relays and discoverability relays do not always need to be identical:
